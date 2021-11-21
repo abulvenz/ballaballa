@@ -30,11 +30,9 @@ document.body.onload = e => {
         document.getElementById("demo").innerHTML = "No Gyros detected";
     }
 
-
     if (window.AmbientLightSensor) {
         document.getElementById("demo").innerHTML += "Ambient detected";
     }
-
 
     let accelerometer = null;
 
@@ -95,3 +93,73 @@ document.body.addEventListener("load", (e) => {
 });
 
 console.log("Neu2")
+
+
+
+const deviceOrientationHandler = (evt) => {
+    const jumpMax = {
+        x: 0,
+        y: 0,
+        z: 0
+    };
+    if (evt.acceleration.x > jumpMax.x) {
+        jumpMax.x = evt.acceleration.x;
+    }
+    if (evt.acceleration.y > jumpMax.y) {
+        jumpMax.y = evt.acceleration.y;
+    }
+    if (evt.acceleration.z > jumpMax.z) {
+        jumpMax.z = evt.acceleration.z;
+    }
+
+    console_log("Soweit ", JSON.stringify(jumpMax))
+
+};
+
+if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', deviceOrientationHandler, false);
+    document.getElementById("demo").innerText = "Supported!";
+}
+
+
+if (navigator.geolocation) {
+
+    // Get a reference to a <div id="map"> tag on the page to insert the map into
+
+    var mapElem = document.getElementById("map"),
+
+        // Define a function to execute once the user’s location has been established,
+        // plotting their latitude and longitude as a map tile image
+
+        successCallback = function(position) {
+            var lat = position.coords.latitude,
+                long = position.coords.longitude;
+
+            //            mapElem.innerHTML = `<iframe width="100%" height="400px" src="https://www.openstreetmap.org/#map=15/${lat}/${long}"></iframe>`;
+
+            mapElem.innerHTML =
+                `<iframe 
+                  width="425" 
+                  height="350" 
+                  frameborder="0" 
+                  scrolling="no" 
+                  marginheight="0" 
+                  marginwidth="0" 
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=${long-0.00001}%2C${lat-0.00001}%2C${long+0.00001}%2C${lat+0.00001}&amp;layer=mapnik&amp;marker=${lat}%2C${long}" style="border: 1px solid black"></iframe><br/><small><a href="https://www.openstreetmap.org/?mlat=51.1836&amp;mlon=6.6889#map=15/51.1836/6.6889">View Larger Map</a></small>`
+            console.log(mapElem.innerHTML)
+        },
+
+        // Define a function to execute if the user’s location couldn’t be established
+
+        errorCallback = function() {
+            alert("Sorry! I couldn’t get your location.");
+        };
+
+    // Start watching the user’s location, updating once per second (1s = 1000ms)
+    // and execute the appropriate callback function based on whether the user
+    // was successfully located or not
+
+    navigator.geolocation.watchPosition(successCallback, errorCallback, {
+        maximumAge: 1000
+    });
+}
