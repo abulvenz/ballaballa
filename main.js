@@ -1,3 +1,13 @@
+navigator.permissions.query({ name: 'accelerometer' })
+    .then(result => {
+        if (result.state === 'denied') {
+            console.log('Permission to use accelerometer sensor is denied.');
+            return;
+        }
+        // Use the sensor.
+    });
+
+
 document.body.onload = e => {
 
     console.log("loaded")
