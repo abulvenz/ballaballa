@@ -10,7 +10,8 @@ document.body.onload = e => {
 
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, innerWidth, innerHeight);
-    ctx.strokeText("", 100, 100, 200);
+    ctx.strokeStyle = "wheat";
+    ctx.strokeText("Nothing yet", 100, 100, 200);
     /*    navigator.permissions.query({ name: "accelerometer" }).then(v => {}, e => {
             console.log(e)
         });*/
@@ -34,7 +35,24 @@ document.body.onload = e => {
         document.getElementById("demo").innerHTML += "Ambient detected";
     }
 
+
     let accelerometer = null;
+
+    const console_log = (...t) => {
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, innerWidth, innerHeight);
+        ctx.strokeStyle = "wheat";
+        ctx.strokeText(t.join(", "), 100, 100, 200);
+    };
+    const reloadOnShake = function(accelerometer) {
+
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, innerWidth, innerHeight);
+        ctx.strokeStyle = "wheat";
+        ctx.strokeText("Nothing yet", 100, 100, 200);
+    };
+
+
     try {
         accelerometer = new Accelerometer({ referenceFrame: 'device' });
         accelerometer.addEventListener('error', event => {
@@ -45,7 +63,18 @@ document.body.onload = e => {
                 console.log('Cannot connect to the sensor.');
             }
         });
-        accelerometer.addEventListener('reading', () => reloadOnShake(accelerometer));
+
+
+        accelerometer.addEventListener('reading', e => {
+            console.log("Magnetic field along the X-axis " + magSensor.x);
+            console.log("Magnetic field along the Y-axis " + magSensor.y);
+            console.log("Magnetic field along the Z-axis " + magSensor.z);
+        })
+        accelerometer.addEventListener('error', event => {
+            console.log(event.error.name, event.error.message);
+        })
+
+        // accelerometer.addEventListener('reading', () => reloadOnShake(accelerometer));
         accelerometer.start();
     } catch (error) {
         // Handle construction errors.
